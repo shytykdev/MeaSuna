@@ -1,0 +1,868 @@
+// -------------------------
+// --------- Header ----- //
+// -------------------------
+
+document.addEventListener("DOMContentLoaded", function () {
+  // Check viewport width
+  if (window.innerWidth > 900) {
+    const navBar = document.querySelector('[data="nav"]');
+    const logo = document.querySelector('[data="logo"]');
+    const menuLines = document.querySelectorAll('[data="menu-line"]');
+    const navButton = document.querySelectorAll('[data="nav-btn"]');
+    // Calculate equivalent pixel value for 200vh
+    const SCROLL_THRESHOLD = 900;
+
+    window.addEventListener("scroll", handleScroll);
+
+    function handleScroll() {
+      if (window.pageYOffset > SCROLL_THRESHOLD) {
+        applyScrollStyles();
+      } else {
+        resetStyles();
+      }
+    }
+
+    function applyScrollStyles() {
+      gsap.to(navBar, {
+        backgroundColor: "#FFFFFF",
+        color: "#000D19",
+        duration: 0.25,
+      });
+      gsap.to(logo, {
+        opacity: 1,
+        ease: "ease",
+        color: "#000D19",
+        duration: 0.2,
+      });
+      gsap.to(menuLines, {
+        backgroundColor: "#000D19",
+        duration: 0.25,
+      });
+      gsap.to(navButton, {
+        backgroundColor: "#000D19",
+        color: "#ffffff",
+        duration: 0.25,
+      });
+    }
+
+    function resetStyles() {
+      gsap.to(navBar, {
+        backgroundColor: "rgba(0, 0, 0, 0.04)",
+        color: "#ffffff",
+        duration: 0.25,
+      });
+      gsap.to(logo, {
+        opacity: 1,
+        ease: "ease",
+        color: "#ffffff",
+        duration: 0.2,
+      });
+      gsap.to(menuLines, {
+        backgroundColor: "#ffffff",
+        duration: 0.25,
+      });
+      gsap.to(navButton, {
+        backgroundColor: "#ffffff",
+        color: "#000D19",
+        duration: 0.25,
+      });
+    }
+
+    handleScroll();
+  }
+});
+
+// ------------------------
+// --- Split Text ------ //
+// ------------------------
+
+(function () {
+  window.addEventListener("DOMContentLoaded", function () {
+    let typeSplit;
+
+    function runSplitType() {
+      typeSplit = new SplitType("[split-type]", {
+        types: "lines, words, chars",
+        tagName: "span",
+      });
+    }
+
+    runSplitType();
+
+    // Link timelines to scroll position
+    function createScrollTrigger(triggerElement, timeline) {
+      // Reset tl when scroll out of view past bottom of screen
+      ScrollTrigger.create({
+        trigger: triggerElement,
+        start: "top bottom",
+        onLeaveBack: () => {
+          timeline.progress(0);
+          timeline.pause();
+        },
+      });
+      // Play tl when scrolled into view (60% from top of screen)
+      ScrollTrigger.create({
+        trigger: triggerElement,
+        start: "top 20%",
+        onEnter: () => timeline.play(),
+      });
+    }
+
+    $("[elem='navbar']").each(function (index, element) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: element,
+          start: "center 0%",
+          end: "bottom 0%",
+          scrub: true,
+        },
+      });
+      tl.to(element, {
+        color: "#4f4f4d",
+        delay: 0.75,
+        ease: "linear",
+        force3D: true,
+        toggleActions: "play none reverse none",
+      });
+    });
+
+    // function shuffleArray(array) {
+    //   for (let i = array.length - 1; i > 0; i--) {
+    //     const j = Math.floor(Math.random() * (i + 1));
+    //     [array[i], array[j]] = [array[j], array[i]];
+    //   }
+    // }
+
+    $("[anim='letter']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0,
+        duration: 1.15,
+        stagger: { each: 0.025, from: "random" },
+        force3D: true,
+        ease: "ease",
+      });
+    });
+
+    $("[anim='sub']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0,
+        duration: 1.15,
+        ease: "easeOut",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='cta']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 45%",
+          end: "top 20%",
+          scrub: true,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.1,
+        duration: 1.15,
+        ease: "easeOut",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='des']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 85%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".word"), {
+        opacity: 1,
+        yPercent: 125,
+        duration: 1.65,
+        delay: 0.25,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.01 },
+      });
+    });
+
+    // Value Slider Animation --On hover
+    $(document).ready(function () {
+      if (window.innerWidth > 992) {
+        $(".swiper-slide.is--vitm").hover(
+          function () {
+            // Mouse enter
+            $(this)
+              .find("[anim='value-sub']")
+              .each(function (index) {
+                let tl = gsap.timeline({
+                  scrollTrigger: {
+                    trigger: $(this),
+                    start: "top 85%",
+                    end: "top 30%",
+                    scrub: false,
+                  },
+                });
+                tl.from($(this).find(".char"), {
+                  opacity: 0,
+                  duration: 1.25,
+                  delay: 0.2,
+                  ease: "ease",
+                  force3D: true,
+                  stagger: { each: 0.035 },
+                });
+              });
+
+            $(this)
+              .find("[anim='value-description']")
+              .each(function (index) {
+                let tl = gsap.timeline({
+                  scrollTrigger: {
+                    trigger: $(this),
+                    start: "top 85%",
+                    end: "top 30%",
+                    scrub: false,
+                  },
+                });
+                tl.from($(this).find(".word"), {
+                  opacity: 1,
+                  yPercent: 125,
+                  duration: 1.15,
+                  delay: 0,
+                  ease: "ease",
+                  force3D: true,
+                  stagger: { each: 0.01 },
+                });
+              });
+          },
+          function () {
+            // Mouse leave
+          }
+        );
+      }
+    });
+
+    // $(document).ready(function () {
+    //   $(".swiper-slide.is--vitm").hover(
+    //     function () {
+    //       // Mouse enter
+    //       $(this)
+    //         .find("[anim='value-sub']")
+    //         .each(function (index) {
+    //           // Assign a unique ID if it doesn't have one
+    //           if (!$(this).attr("id")) {
+    //             $(this).attr("id", "value-sub-" + index);
+    //           }
+
+    //           // Kill any existing ScrollTriggers for this element
+    //           ScrollTrigger.getById($(this).attr("id"))?.kill();
+
+    //           let tl = gsap.timeline({
+    //             scrollTrigger: {
+    //               id: $(this).attr("id"),
+    //               trigger: $(this),
+    //               start: "top 85%",
+    //               end: "top 30%",
+    //               scrub: false,
+    //             },
+    //           });
+    //           tl.from($(this).find(".word"), {
+    //             opacity: 1,
+    //             yPercent: 125,
+    //             duration: 1.65,
+    //             delay: 0.25,
+    //             ease: "power4.out",
+    //             force3D: true,
+    //             stagger: { each: 0.01 },
+    //           });
+    //         });
+
+    //       $(this)
+    //         .find("[anim='value-description']")
+    //         .each(function (index) {
+    //           // Assign a unique ID if it doesn't have one
+    //           if (!$(this).attr("id")) {
+    //             $(this).attr("id", "value-description-" + index);
+    //           }
+
+    //           // Kill any existing ScrollTriggers for this element
+    //           ScrollTrigger.getById($(this).attr("id"))?.kill();
+
+    //           let tl = gsap.timeline({
+    //             scrollTrigger: {
+    //               id: $(this).attr("id"),
+    //               trigger: $(this),
+    //               start: "top 85%",
+    //               end: "top 30%",
+    //               scrub: false,
+    //             },
+    //           });
+    //           tl.from($(this).find(".word"), {
+    //             opacity: 1,
+    //             yPercent: 125,
+    //             duration: 1.65,
+    //             delay: 0.25,
+    //             ease: "power4.out",
+    //             force3D: true,
+    //             stagger: { each: 0.01 },
+    //           });
+    //         });
+    //     },
+    //     function () {
+    //       // Mouse leave
+    //       $(this)
+    //         .find("[anim='value-sub']")
+    //         .each(function (index) {
+    //           let tl = gsap.timeline();
+    //           tl.to($(this).find(".word"), {
+    //             opacity: 1,
+    //             yPercent: 125,
+    //             duration: 0.5,
+    //             ease: "power4.out",
+    //             force3D: true,
+    //             stagger: { each: 0.01 },
+    //           });
+    //         });
+
+    //       $(this)
+    //         .find("[anim='value-description']")
+    //         .each(function (index) {
+    //           let tl = gsap.timeline();
+    //           tl.to($(this).find(".word"), {
+    //             opacity: 1,
+    //             yPercent: 125,
+    //             duration: 0.5,
+    //             ease: "power4.out",
+    //             force3D: true,
+    //             stagger: { each: 0.01 },
+    //           });
+    //         });
+    //     }
+    //   );
+    // });
+
+    // Value Slider Animation --END
+
+    $("[anim='hsub']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 85%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 1,
+        yPercent: 125,
+        duration: 1.65,
+        delay: 2,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.01 },
+      });
+    });
+
+    $("[anim='des-l']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 85%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".word"), {
+        opacity: 1,
+        yPercent: 125,
+        duration: 1.65,
+        delay: 0.25,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.01 },
+      });
+    });
+
+    $("[anim='des-v2']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".word"), {
+        opacity: 0.2,
+        duration: 0.85,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='title']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.1,
+        duration: 0.5,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='label']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".word"), {
+        opacity: 0.25,
+        yPercent: 135,
+        duration: 1.25,
+        delay: 0.2,
+        ease: "ease",
+        force3D: true,
+        stagger: { each: 0.025 },
+      });
+    });
+
+    $("[anim='title-review']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "[anim='title-review']",
+          start: "top 25%",
+          end: "top 25%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.25,
+        yPercent: 135,
+        duration: 1.25,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='title-v3']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.2,
+        duration: 0.7,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.02 },
+      });
+    });
+
+    $("[anim='name']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 70%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.05,
+        duration: 1.125,
+        ease: "ease",
+        force3D: true,
+        stagger: { each: 0.15 },
+      });
+    });
+
+    if (window.innerWidth > 990) {
+      $("[anim='title-v']").each(function (index) {
+        let tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: $(this),
+            start: "top 90%",
+            end: "top 30%",
+            scrub: false,
+          },
+        });
+        tl.from($(this).find(".word"), {
+          opacity: 0.25,
+          yPercent: 135,
+          duration: 1.5,
+          delay: 0.35,
+          ease: "power4.out",
+          force3D: true,
+          stagger: { each: 0.01 },
+        });
+      });
+    }
+
+    $("[anim='word']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".word"), {
+        opacity: 0.25,
+        yPercent: 125,
+        duration: 1.5,
+        delay: 0.2,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.025 },
+      });
+    });
+
+    $("[anim='char']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.375,
+        yPercent: 125,
+        duration: 1.75,
+        delay: 0.1,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.035 },
+      });
+    });
+
+    $("[anim='char-t']").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 30%",
+          scrub: false,
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.375,
+        yPercent: 125,
+        duration: 1.75,
+        delay: 0.1,
+        ease: "power4.out",
+        force3D: true,
+        stagger: { each: 0.035 },
+      });
+    });
+
+    $("[sh-custom]").each(function (index) {
+      let tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: $(this),
+          start: "top 90%",
+          end: "top 25%",
+        },
+      });
+      tl.from($(this).find(".char"), {
+        opacity: 0.1,
+        duration: 1,
+        ease: "power4.out",
+        force3D: true,
+        stagger: {
+          each: 0.2,
+          from: "center",
+          ease: "power2.inOut",
+        },
+      });
+    });
+  });
+})();
+
+// Gallery Section --Entire
+// gsap.to(".gallery-list", {
+//   scale: 1,
+//   duration: 0.75,
+//   opacity: 1,
+//   delay: 1,
+//   // stagger: 0.1,
+//   ease: "ease",
+//   scrollTrigger: {
+//     trigger: ".gallery-content",
+//     start: "top top",
+//     end: "+=100%",
+//     scrub: true,
+//     //markers: true,
+//     // toggleActions: "restart none restart none",
+//   },
+// });
+
+// Gallery Section --Item --V3
+// gsap.to(".gallery-item.is--v3.is--up", {
+//   width: "100vw",
+//   height: "100vh",
+//   duration: 0.75,
+//   opacity: 1,
+//   delay: 1,
+//   // stagger: 0.1,
+//   ease: "ease",
+//   scrollTrigger: {
+//     trigger: ".gallery-content",
+//     start: "top top",
+//     end: "+=200%",
+//     scrub: true,
+//     //markers: true,
+//     // toggleActions: "restart none restart none",
+//   },
+// });
+
+// Gallery Section --Items --ALL
+gsap.to(".gallery-item.is--v1", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.to(".gallery-item.is--v2", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.to(".gallery-item.is--v3.is--up", {
+  width: "100vw",
+  height: "100vh",
+  duration: 0.75,
+  opacity: 1,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=125%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.to(".gallery-item.is--v4", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.to(".gallery-item.is--v5", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.to(".gallery-item.is--v6", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 1,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".gallery-content",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+
+// ---------------------------------
+// --- Review Section Animation--- //
+// ---------------------------------
+
+gsap.from(".background.is--review", {
+  duration: 0.75,
+  opacity: 0,
+  delay: 0.5,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".background.is--review",
+    start: "top top",
+    end: "+=100%",
+    scrub: true,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+
+gsap.from(".line.is--review", {
+  duration: 2.5,
+  width: "0vw",
+  opacity: 1,
+  delay: 0.5,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".line.is--review",
+    start: "top 25%",
+    end: "top 25%",
+    scrub: false,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+gsap.from(".line.is--review-v2", {
+  duration: 2.5,
+  width: "0vw",
+  opacity: 1,
+  delay: 0.5,
+  // stagger: 0.1,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".line.is--review-v2",
+    start: "top 25%",
+    end: "top 25%",
+    scrub: false,
+    //markers: true,
+    // toggleActions: "restart none restart none",
+  },
+});
+
+// -------------------
+// --- Nav Items--- //
+// ------------------
+
+$(document).ready(function () {
+  $(".footer-nav").hover(
+    function () {
+      $(".footer-nav").not(this).css("opacity", 0.5);
+    },
+    function () {
+      $(".footer-nav").css("opacity", 1);
+    }
+  );
+});
+
+$(document).ready(function () {
+  $(".social-item").hover(
+    function () {
+      $(".social-item").not(this).css("opacity", 0.5);
+    },
+    function () {
+      $(".social-item").css("opacity", 1);
+    }
+  );
+});
+
+// $(document).ready(function () {
+//   $(".swiper-slide.is--vitm").hover(
+//     function () {
+//       $(".swiper-slide.is--vitm").not(this).css("opacity", 0.75);
+//     },
+//     function () {
+//       $(".swiper-slide.is--vitm").css("opacity", 1);
+//     }
+//   );
+// });
+
+// -----------------------
+// --- Scroll Trigger--- //
+// -----------------------
+
+gsap.from(".hz-scroll", {
+  opacity: 0,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".horizontal-section",
+    start: "top top",
+    end: "bottom 0%",
+    scrub: false,
+  },
+});
+
+gsap.to(".hz-scroll", {
+  opacity: 0,
+  ease: "ease",
+  scrollTrigger: {
+    trigger: ".plan-section",
+    start: "top top",
+    end: "bottom 0%",
+    scrub: false,
+  },
+});
